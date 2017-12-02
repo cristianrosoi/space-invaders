@@ -33,24 +33,41 @@ var keyCodes = {
   "lshift": 16
 }
 
-var ship;
-var invaders = new Array();
+var ship = null;
+var shipPNG = null;
 var bullets = new Array();
 
-var shipPNG;
+var invaders = new Array();
+var invaderPNG = null;
+var invaderBullets = new Array();
+
+
+var score = 0;
+var damage = 0;
+
+var gameMode = "classic";
+var gameOver = false;
+
 function preload() {
   shipPNG = loadImage("./svg/rocket.png");
+  invaderPNG = loadImage("./svg/invader.png");
+  spacePNG = loadImage("./svg/space.jpg");
 }
 
 function setup() {
-  createCanvas(640, 480);
+  createCanvas(window.innerWidth, window.innerHeight);
 
   ship = new Ship();
 
-  for(let i = 0; i < 6; i++) {
-    invaders.push(new Invader(i * 80 + 80, 60));
-  }
+  for(let i = 0; i < window.innerWidth / 100; i++) {
+    invaders.push(new Invader(i * 80 + 80, 63));
+    invaders.push(new Invader(i * 80 + 80, 63 * 3));
 
+    // if(i % 3 == 0) {
+    //   invaderBullets.push( new Bullet(invaders[i].x, invaders[i].y) );
+    // }
+
+  }
 }
 
 function draw() {
@@ -58,7 +75,16 @@ function draw() {
   /**
    * Turn the canvas background
    */
-  background(51);
+  background(20);
+
+  /**
+   * Show the score info
+   * on top left of the screen
+   */
+  textSize(16);
+  fill(255);
+  text("Score: " + score, 10, 30);
+  text("damage: " + damage, width - 110, 30);
 
   /**
    * Appplying the show method from the ship class
@@ -79,8 +105,7 @@ function draw() {
       if(bullets[b].hits(invaders[i])) {
         bullets[b].removeIt();
         invaders[i].removeIt();
-
-        console.log("impact!!!");
+        score++;
       }
     }
   }
@@ -95,6 +120,16 @@ function draw() {
     if(invaders[i].toRemove) {
       invaders.splice(i, 1);
     }
+
+    if(ship.hits(invaders[i])) {
+      console.log("Ship HIT!!!");
+      damage++;
+    }
+  }
+
+  if(damage > 1000) {
+    //game over
+    invaders = [];
   }
 
   /**
@@ -104,9 +139,15 @@ function draw() {
   for(let i = 0; i < invaders.length; i++) {
     invaders[i].show();
     invaders[i].move();
+
     if(invaders[i].x > width || invaders[i].x < 0) {
       edge = true;
     }
+  }
+
+  for(let b = 0; b < invaderBullets.length; b++) {
+    invaderBullets[b].show();
+    invaderBullets[b].attack();
   }
 
   if(edge) {
@@ -114,6 +155,7 @@ function draw() {
       invaders[i].shiftDown();
     }
   }
+
 
 }
 

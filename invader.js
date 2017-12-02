@@ -11,10 +11,15 @@ class Invader {
     this.toRemove = false;
   }
 
+  // show() {
+  //   noStroke();
+  //   fill(255, 0, 200);
+  //   ellipse(this.x, this.y, this.r * 2, this.r * 2);
+  // }
+
   show() {
-    noStroke();
-    fill(255, 0, 200);
-    ellipse(this.x, this.y, this.r * 2, this.r * 2);
+    imageMode(CENTER);
+    image(invaderPNG, this.x, this.y);
   }
 
   move() {
@@ -24,6 +29,10 @@ class Invader {
   shiftDown() {
     this.xDirection *= -1;
     this.y += this.r;
+  }
+
+  flyDown() {
+    this.y += 5;
   }
 
   removeIt() {

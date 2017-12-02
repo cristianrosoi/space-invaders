@@ -17,6 +17,10 @@ class Bullet {
     this.y -= 10;
   }
 
+  attack() {
+    this.y += 10;
+  }
+
   /**
    *
    * If the distance between two circles is smaller than the sum of the radius of the circles
