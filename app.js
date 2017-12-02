@@ -1,20 +1,21 @@
-var canvas = document.querySelector("#canvas");
-var ctx = canvas.getContext('2d');
+{
+  // var width = 1410;
+  // var height = 700;
+  // var characterWidth = 100;
+  // var characterHeight = 70;
+  // var xPos = width / 2 - characterWidth;
+  // var yPos = height - characterHeight - 30;
 
-function setCanvasBackgroundColor() {
-  ctx.fillStyle = "#34495e";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  // var fps = 30;
+
+  // var rocketIMG = "./svg/rocket.png";
+  // var fireIMG = "./svg/fire.png";
 }
 
 
-var width = 1410;
-var height = 700;
-var characterWidth = 100;
-var characterHeight = 70;
-var xPos = width / 2 - characterWidth;
-var yPos = height - characterHeight - 30;
-
-var fps = 60;
+/**
+ * Youtube Tutorial
+ */
 
 var keyCodes = {
   "w": 87,
@@ -32,113 +33,105 @@ var keyCodes = {
   "lshift": 16
 }
 
-var rocketIMG = "./svg/rocket.png";
-var fireIMG = "./svg/fire.png";
+var ship;
+var invaders = new Array();
+var bullets = new Array();
 
-drawing = new Image();
-drawing.src = rocketIMG; // can also be a remote URL e.g. http://
-drawing.onload = function() {
-  ctx.drawImage(drawing, xPos, yPos);
-};
-
-function redrawCanvas(img) {
-  canvas.width = canvas.width;
-  drawing = new Image();
-  drawing.src = img; // can also be a remote URL e.g. http://
-  drawing.onload = function() {
-    setInterval(function(){
-      ctx.drawImage(drawing, xPos, yPos);
-    }, 1000 / fps);
-  };
+var shipPNG;
+function preload() {
+  shipPNG = loadImage("./svg/rocket.png");
 }
 
-function redrawFire(fire_yPos) {
-  canvas.width = canvas.width;
-  var rocket = new Image();
-  rocket.src = rocketIMG;
-  var fire = new Image();
-  fire.src = fireIMG;
+function setup() {
+  createCanvas(640, 480);
 
-  rocket.onload = function() {
-    setInterval(function(){
-      ctx.drawImage(rocket, xPos, yPos);
-    }, 1000 / fps);
-  };
+  ship = new Ship();
 
-  fire.onload = function() {
-    setInterval(function() {
-      ctx.drawImage(fire, xPos + 17, fire_yPos);
-    }, 1000 / fps);
-  };
-
-}
-
-function moveLeft(event) {
-  if(event.keyCode == keyCodes.a) {
-    xPos -= 5;
-
-    redrawCanvas(rocketIMG);
-  }
-}
-
-function moveRight(event) {
-  if(event.keyCode == keyCodes.d) {
-    xPos += 5;
-
-    redrawCanvas(rocketIMG);
-  }
-}
-
-function moveUp() {
-  if(event.keyCode == keyCodes.w) {
-    yPos -= 5;
-
-    redrawCanvas(rocketIMG);
-  }
-}
-
-function moveDown() {
-  if(event.keyCode == keyCodes.s) {
-    yPos += 5;
-
-    redrawCanvas(rocketIMG);
-  }
-}
-
-fire_yPos = yPos;
-fireStatus = false;
-
-function fire(event, fire_yPos, fireStatus) {
-  if (event.keyCode == keyCodes.space && fireStatus == false) {
-
-    redrawFire(fire_yPos);
-    updateFireYpos();
+  for(let i = 0; i < 6; i++) {
+    invaders.push(new Invader(i * 80 + 80, 60));
   }
 
-  if (event.keyCode == keyCodes.space && fireStatus == true) {
-    redrawCanvas(rocketIMG);
-  }
-
-  fireStatus = !fireStatus;
 }
 
-function updateFireYpos() {
-  update_fire_yPos = setInterval(function() {
-    if( fire_yPos > 0) {
-      fire_yPos = fire_yPos - 50;
-      redrawFire(fire_yPos);
+function draw() {
+
+  /**
+   * Turn the canvas background
+   */
+  background(51);
+
+  /**
+   * Appplying the show method from the ship class
+   * will allow the ship to be displayed on canvas
+   */
+  ship.show();
+  ship.move();
+
+  /**
+   * Shooting bullets whenever the user is
+   * pressing the spacebar
+   */
+  for(let b = 0; b < bullets.length; b++) {
+    bullets[b].show();
+    bullets[b].move();
+
+    for(let i = 0; i < invaders.length; i++) {
+      if(bullets[b].hits(invaders[i])) {
+        bullets[b].removeIt();
+        invaders[i].removeIt();
+
+        console.log("impact!!!");
+      }
     }
+  }
 
-    clearInterval("update_fire_yPos");
+  for(let b = bullets.length - 1; b >= 0; b--) {
+    if(bullets[b].toRemove) {
+      bullets.splice(b, 1);
+    }
+  }
 
-  }, 1000 / fps);
+  for(let i = invaders.length - 1; i >= 0; i--) {
+    if(invaders[i].toRemove) {
+      invaders.splice(i, 1);
+    }
+  }
+
+  /**
+   * Show the invaders on the canvas
+   */
+  var edge = false;
+  for(let i = 0; i < invaders.length; i++) {
+    invaders[i].show();
+    invaders[i].move();
+    if(invaders[i].x > width || invaders[i].x < 0) {
+      edge = true;
+    }
+  }
+
+  if(edge) {
+    for(let i = 0; i < invaders.length; i++) {
+      invaders[i].shiftDown();
+    }
+  }
+
 }
 
-document.addEventListener("keydown", function(){
-  moveRight(event);
-  moveLeft(event);
-  moveUp(event);
-  moveDown(event);
-  fire(event, fire_yPos, fireStatus);
-});
+function keyPressed() {
+  if(keyCode == keyCodes.d) {
+    ship.setDirection(1);
+  } else if(keyCode == keyCodes.a) {
+    ship.setDirection(-1);
+  }
+
+  if(keyCode == keyCodes.space) {
+    bullets.push( new Bullet(ship.x, height - 60) );
+  }
+}
+
+function keyReleased() {
+  if(keyCode != keyCodes.space) {
+    ship.setDirection(0);
+  }
+}
 
