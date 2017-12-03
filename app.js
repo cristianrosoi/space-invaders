@@ -8,8 +8,8 @@
 
   // var fps = 30;
 
-  // var rocketIMG = "./svg/rocket.png";
-  // var fireIMG = "./svg/fire.png";
+  // var rocketIMG = "./assets/rocket.png";
+  // var fireIMG = "./assets/fire.png";
 }
 
 
@@ -49,9 +49,12 @@ var gameMode = "classic";
 var gameOver = false;
 
 function preload() {
-  shipPNG = loadImage("./svg/rocket.png");
-  invaderPNG = loadImage("./svg/invader.png");
-  spacePNG = loadImage("./svg/space.jpg");
+  shipPNG = loadImage("./assets/rocket.png");
+  invaderPNG = loadImage("./assets/invader.png");
+  spacePNG = loadImage("./assets/space.jpg");
+  explosionGIF = loadGif("./assets/explosion.gif");
+  explosionRealGIF = loadGif("./assets/explosion-real.gif");
+  explosionCartoonGIF = loadGif("./assets/explosion-cartoon.webp");
 }
 
 function setup() {
@@ -76,6 +79,7 @@ function draw() {
    * Turn the canvas background
    */
   background(20);
+  image(spacePNG, 720, 400);
 
   /**
    * Show the score info
@@ -84,7 +88,7 @@ function draw() {
   textSize(16);
   fill(255);
   text("Score: " + score, 10, 30);
-  text("damage: " + damage, width - 110, 30);
+  text("damage: " + damage, 10, height - 30);
 
   /**
    * Appplying the show method from the ship class
@@ -105,6 +109,8 @@ function draw() {
       if(bullets[b].hits(invaders[i])) {
         bullets[b].removeIt();
         invaders[i].removeIt();
+        image(explosionGIF, invaders[i].x, invaders[i].y);
+        explosionGIF.play();
         score++;
       }
     }
@@ -120,7 +126,9 @@ function draw() {
     if(invaders[i].toRemove) {
       invaders.splice(i, 1);
     }
+  }
 
+  for(let i = 0; i < invaders.length; i++) {
     if(ship.hits(invaders[i])) {
       console.log("Ship HIT!!!");
       damage++;
