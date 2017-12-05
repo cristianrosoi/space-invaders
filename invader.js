@@ -3,23 +3,25 @@ class Invader {
     this.x = x;
     this.y = y;
 
+    //this.width = 104;
+    //this.height = 84;
+
     //circle radius
-    this.r = 30;
+    this.r = 104 / 2;
 
     this.xDirection = 1;
 
     this.toRemove = false;
   }
 
-  // show() {
-  //   noStroke();
-  //   fill(255, 0, 200);
-  //   ellipse(this.x, this.y, this.r * 2, this.r * 2);
-  // }
-
   show() {
     imageMode(CENTER);
     image(invaderPNG, this.x, this.y);
+  }
+
+  explode() {
+    image(explosionGIF, this.x, this.y);
+    explosionSound.play();
   }
 
   move() {

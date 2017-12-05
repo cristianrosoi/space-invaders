@@ -11,13 +11,6 @@ class Ship {
 
   }
 
-  // show() {
-  //   noStroke();
-  //   rectMode(CENTER);
-  //   fill(255);
-  //   rect(this.x, height - 20, 20, 60);
-  // }
-
   show() {
     imageMode(CENTER);
     image(shipPNG, this.x, this.y);

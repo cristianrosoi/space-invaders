@@ -9,7 +9,7 @@ class Bullet {
 
   show() {
     noStroke();
-    fill(255);
+    fill(231, 76, 60);
     ellipse(this.x, this.y, this.r * 2, this.r * 2);
   }
 
