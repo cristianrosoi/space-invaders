@@ -3,14 +3,14 @@ class Bullet {
     this.x = x;
     this.y = y;
     //circle radius
-    this.r = 4;
+    this.r = 2;
     this.toRemove = false;
   }
 
   show() {
     noStroke();
     fill(231, 76, 60);
-    ellipse(this.x, this.y, this.r * 2, this.r * 2);
+    ellipse(this.x, this.y, this.r * 2, this.r * 20);
   }
 
   move() {

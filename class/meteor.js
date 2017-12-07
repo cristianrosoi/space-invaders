@@ -10,6 +10,10 @@ class Meteor {
         image(meteorPNG, this.x, this.y);
     }
 
+    wiggle() {
+        this.x = this.x + random(-2, 2);
+    }
+
     fall() {
         this.y += 1;
     }

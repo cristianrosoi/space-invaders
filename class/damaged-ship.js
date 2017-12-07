@@ -1,5 +1,5 @@
 class DamagedShip {
-    
+
     constructor(x, y) {
         this.x = x;
         this.y = y;
@@ -7,7 +7,7 @@ class DamagedShip {
         this.xDirection = 0;
         this.shipWidth = 100;
         this.shipHeight = 70;
-    
+
         this.r = this.shipHeight / 2;
     }
 
