@@ -1,18 +1,3 @@
-{
-  // var width = 1410;
-  // var height = 700;
-  // var characterWidth = 100;
-  // var characterHeight = 70;
-  // var xPos = width / 2 - characterWidth;
-  // var yPos = height - characterHeight - 30;
-
-  // var fps = 30;
-
-  // var rocketIMG = "./assets/rocket.png";
-  // var fireIMG = "./assets/fire.png";
-}
-
-
 /**
  * Youtube Tutorial
  */
@@ -35,6 +20,9 @@ var keyCodes = {
 
 var ship = null;
 var shipPNG = null;
+
+var meteor = null;
+
 var bullets = new Array();
 
 var invaders = new Array();
@@ -50,9 +38,12 @@ var gameOver = false;
 
 function preload() {
   shipPNG = loadImage("./assets/art/PNG/playerShip1_red.png");
+  shipDistroyedPNG = loadImage("./assets/art/PNG/Damage/playerShip1_damage3.png")
   invaderPNG = loadImage("./assets/art/PNG/Enemies/enemyBlue2.png");
   starsPNG = loadImage("./assets/stars.jpg");
   starsPNG_1080p = loadImage("./assets/stars_1080p.jpg");
+  meteorPNG = loadImage("./assets/art/PNG/Meteors/meteorBrown_big2.png");
+
   explosionGIF = loadImage("./assets/effects/explosion.gif");
 
   soundFormats('mp3', 'ogg');
@@ -62,19 +53,15 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(window.innerWidth, window.innerHeight);
-
-  if(window.innerWidth == 1440) {
-    background(starsPNG);
-  } else if (window.innerWidth == 1920) {
-    background(starsPNG_1080p);
-  } else {
-    background(22);
-  }
-
+  imageMode(CENTER);
+  createCanvas(displayWidth, displayHeight);
   music.play();
 
   ship = new Ship();
+   
+  meteor1 = new Meteor(random(0, width), 100); 
+  meteor2 = new Meteor(random(0, width), 100);
+  meteor3 = new Meteor(random(0, width), 100);
 
   for(let i = 0; i < 7; i++) {
     invaders.push(new Invader(i * 175 + 80, 63));
@@ -85,16 +72,19 @@ function setup() {
     // }
 
   }
+
+  
 }
 
 function draw() {
+ //createCanvas(window.innerWidth, window.innerHeight);
+  image(starsPNG_1080p, displayWidth/2, displayHeight/2);
 
   /**
    * Turn the canvas background
    */
-  //background(22);
-
-  image(starsPNG, 720, 400);
+ 
+  //image(starsPNG_1080p, 700, 400);
 
   /**
    * Show the score info
@@ -111,6 +101,30 @@ function draw() {
    */
   ship.show();
   ship.move();
+
+  meteor1.show();
+  meteor1.fall();
+
+  setTimeout(function(){
+    meteor2.show();
+    meteor2.fall();
+  })
+  
+
+  meteor3.show();
+  meteor3.fall();
+
+  if(meteor1.y > height) {
+    meteor1.y = 0;
+  }
+
+  if(meteor2.y > height) {
+    meteor2.y = 0;
+  }
+
+  if(meteor3.y > height) {
+    meteor3.y = 0;
+  }
 
   /**
    * Shooting bullets whenever the user is
@@ -136,6 +150,13 @@ function draw() {
     }
   }
 
+  for(let b = invaderBullets.length - 1; b >= 0; b-- ) {
+    if(invaderBullets[b].toRemove) {
+      invaderBullets.splice(b, 1);
+      damage += 150;
+    }
+  }
+
   for(let i = invaders.length - 1; i >= 0; i--) {
     if(invaders[i].toRemove) {
       invaders.splice(i, 1);
@@ -149,9 +170,13 @@ function draw() {
     }
   }
 
-  if(damage > 1000) {
+  if(damage >= 450) {
     //game over
     invaders = [];
+    image(starsPNG_1080p, displayWidth/2, displayHeight/2);
+    var damagedShip = new DamagedShip(ship.x, ship.y);
+    damagedShip.show();
+    noLoop();
   }
 
   /**
@@ -170,11 +195,19 @@ function draw() {
   for(let b = 0; b < invaderBullets.length; b++) {
     invaderBullets[b].show();
     invaderBullets[b].attack();
+
+    if(invaderBullets[b].hits(ship)) {
+      invaderBullets[b].removeIt();
+      console.log("SHIP WAS HIT BY BULLET!!");
+    }
   }
 
   if(edge) {
     for(let i = 0; i < invaders.length; i++) {
       invaders[i].shiftDown();
+      if(i % 3 == 0) {
+        invaderBullets.push(new Bullet(invaders[i].x, invaders[i].y));
+      }
     }
   }
 
