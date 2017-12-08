@@ -24,19 +24,31 @@ var shipPNG = null;
 var meteorites = new Array();
 
 var bullets = new Array();
+var bulletsShot = 0;
+var invadersKilled = 0;
 
 var invaders = new Array();
+
 var invaderPNG = null;
 var invaderBullets = new Array();
 
 
 var score = 0;
 var damage = 0;
+var bonusFromTime = 0.0;
+var bonusFromAccuaracy = 0.0;
 
 var gameMode = "classic";
 var gameOver = false;
 
 var timer = 0;
+var startTime = getTime();
+
+function getTime() {
+  var currentDate = new Date();
+  return currentDate.getTime();
+}
+
 
 function preload() {
   /**
@@ -75,6 +87,14 @@ function setup() {
 
   }
 
+  //EVENTS
+  var playerWinEvent = new Event("playerWin");
+
+  window.addEventListener("playerWin", function(event) {
+    score = score + bonusFromTime + bonusFromAccuaracy;
+
+    setTimeout(noLoop, 200);
+  }, false);
 }
 
 function draw() {
@@ -89,6 +109,8 @@ function draw() {
   textSize(16);
   fill(255);
   text("Score: " + score, 10, 30);
+  text("BonusFromTime: " + bonusFromTime, 10, 50);
+  text("BonusFromAccuaracy: " + bonusFromAccuaracy, 10, 70);
   text("damage: " + damage, 10, height - 30);
 
   /**
@@ -125,12 +147,16 @@ function draw() {
     bullets[b].show();
     bullets[b].move();
 
+    /**
+     * Bullets hits invaders and kills them
+     */
     for(let i = 0; i < invaders.length; i++) {
       if(bullets[b].hits(invaders[i])) {
         bullets[b].removeIt();
         invaders[i].removeIt();
         invaders[i].explode();
         score++;
+        invadersKilled++;
       }
     }
   }
@@ -173,6 +199,35 @@ function draw() {
 
     //Stop the draw function
     noLoop();
+  }
+
+  if(invaders.length < 1) {
+
+    //Player wins!
+
+    var endTime = getTime();
+    
+    /**
+     * bonusFromTime in Minutes * 10 
+     * 1 millisecond = 0.0000166667;
+     * 
+     * bonusFromTime adds to score
+     * should be less if the 
+     * time to clear the level is bigger
+     * 
+     * bonusFromAccuaracy adds to score
+     * should be bigger if the accuaracy
+     * is closer to 0
+     */
+    
+    var timeDiff = ((endTime - startTime) * 0.0000166667).toFixed(2);
+    bonusFromTime = Math.round((1 / timeDiff) * 100);
+    
+    var accuaracy = bulletsShot / invadersKilled;
+    bonusFromAccuaracy = Math.round((1 / accuaracy) * 1000);
+
+    window.dispatchEvent(new CustomEvent("playerWin"));
+    
   }
 
   /**
@@ -225,6 +280,7 @@ function keyPressed() {
     bullets.push( new Bullet(ship.x, height - 60) );
     //laserSound.play();
     laserSound2.play();
+    bulletsShot++;
   }
 }
 
