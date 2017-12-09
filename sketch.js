@@ -63,6 +63,9 @@ function preload() {
   starsPNG_1080p = loadImage("./assets/stars_1080p.jpg");
   meteorPNG = loadImage("./assets/art/PNG/Meteors/meteorBrown_big2.png");
 
+  spaceFont = loadFont('./assets/art/Bonus/kenvector_future.ttf');
+  spaceFontThin = loadFont('./assets/art/Bonus/kenvector_future_thin.ttf');
+
   explosionGIF = loadImage("./assets/effects/explosion.gif");
 
   soundFormats('mp3', 'ogg');
@@ -76,7 +79,7 @@ function preload() {
 
 function setup() {
   imageMode(CENTER);
-  createCanvas(displayWidth, displayHeight);
+  createCanvas(windowWidth, windowHeight);
   music.play();
 
   ship = new Ship();
@@ -120,6 +123,7 @@ function draw() {
    * Show the score info
    * on top left of the screen
    */
+  textFont(spaceFontThin);
   textSize(16);
   fill(255);
   text("Score: " + score, 10, 30);
