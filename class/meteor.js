@@ -10,7 +10,8 @@ class Meteor {
         this.toRemove = false;
 
         this.shield = random(5, 10);
-        console.log("spawned meteorite with shield:", this.shield);
+
+        this.dropRate = random(0, 50);
     }
 
     show() {

@@ -1,8 +1,10 @@
-class BonusStar {
+class Bonus {
 
-  constructor(x, y) {
+  constructor(x, y, name, png) {
     this.x = x;
     this.y = y;
+    this.name = name.toLowerCase();
+    this.png = png;
 
     this.r = 15;
 
@@ -11,7 +13,7 @@ class BonusStar {
 
   show() {
     imageMode(CENTER);
-    image(star, this.x, this.y);
+    image(this.png, this.x, this.y);
   }
 
   move() {

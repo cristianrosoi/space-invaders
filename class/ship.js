@@ -9,6 +9,9 @@ class Ship {
 
     this.r = this.shipHeight / 2;
 
+    this.shield = 2;
+    this.shieldActive = false;
+
   }
 
   show() {
@@ -37,5 +40,10 @@ class Ship {
     } else {
       return false;
     }
+  }
+
+  activateShield() {
+    this.shieldActive = true;
+    shieldUpSound.play();
   }
 }

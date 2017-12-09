@@ -3,7 +3,6 @@ class Invader {
     this.x = x;
     this.y = y;
     this.dropRate = dropRate.toFixed(2);
-    console.log("invader's drop rate:", dropRate);
 
     //circle radius
     this.r = 104 / 2;

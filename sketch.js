@@ -42,8 +42,9 @@ var invaders = [];
 var invaderPNG = null;
 var invaderBullets = [];
 
-var bonusStars = [];
-var collectedBonusStars = 0;
+var bonusItems = [];
+var collectedbonusItems = 0;
+var collectedbonusStars = 0;
 
 var backgroundImage = null;
 
@@ -72,6 +73,7 @@ function preload() {
    * Load Assets: images, sounds, gifs
    */
   shipPNG = loadImage(shipModel);
+  shipShieldActivePNG = loadImage("./assets/art/PNG/Effects/shield1.png");
   shipDistroyedPNG = loadImage("./assets/art/PNG/Damage/playerShip1_damage3.png");
 
   laserPNG = loadImage("./assets/art/PNG/Lasers/laser_" + shipColor + "02.png");
@@ -79,7 +81,8 @@ function preload() {
   invaderPNG = loadImage("./assets/art/PNG/Enemies/enemyBlue2.png");
 
   stars2PNG = loadImage("./assets/stars2.jpg");
-  star = loadImage("./assets/art/PNG/Power-ups/star_gold.png");
+  starPNG = loadImage("./assets/art/PNG/Power-ups/star_gold.png");
+  shieldPNG = loadImage("./assets/art/PNG/Power-ups/shield_silver.png");
 
   meteorPNG = loadImage("./assets/art/PNG/Meteors/meteorBrown_big2.png");
 
@@ -97,6 +100,11 @@ function preload() {
 
   collectedSound = loadSound('./assets/art/Bonus/sfx_twoTone.ogg');
   collectedSound.setVolume(soundVolume);
+
+  shieldUpSound = loadSound('./assets/art/Bonus/sfx_shieldUp.ogg');
+  shieldUpSound.setVolume(soundVolume);
+  shieldDownSound = loadSound('./assets/art/Bonus/sfx_shieldDown.ogg');
+  shieldDownSound.setVolume(soundVolume);
 
   music = loadSound('./assets/sounds/music.mp3');
   music.setVolume(musicVolume);
@@ -141,7 +149,8 @@ function draw() {
     imageY = displayHeight / 2;
   }
 
-  image(star, 30, 30);
+  //Star from the menu
+  image(starPNG, 30, 30);
 
   /**
    * Show the score info
@@ -151,7 +160,7 @@ function draw() {
   textSize(16);
   fill(255);
   text(name + "'s Score: " + score, 100, 40);
-  text(collectedBonusStars, 50, 50);
+  text(collectedbonusStars, 50, 50);
   text("damage: " + damage, 10, height - 30);
 
   /**
@@ -181,19 +190,33 @@ function draw() {
     }
   }
 
-  for(let star of bonusStars) {
-    star.show();
-    star.move();
+  for(let item of bonusItems) {
+    item.show();
+    item.move();
 
-    if(star.collected(ship)) {
-      collectedBonusStars++;
-      star.removeIt();
+    if(item.collected(ship)) {
+      if(item.name == "star") {
+        collectedbonusStars++;
+      } else if(item.name == "shield") {
+        ship.activateShield();
+        collectedbonusItems++;
+      } else {
+        collectedbonusItems++;
+      }
+
+      item.removeIt();
     }
 
-    //star missed or not collected
-    if(star.y > height) {
-      star.removeIt();
+    //item missed or not collected
+    if(item.y > height) {
+      item.removeIt();
     }
+  }
+
+  //Activate Ship Shield
+  if(ship.shieldActive == true && ship.shield > 0) {
+    imageMode(CENTER);
+    image(shipShieldActivePNG, ship.x, ship.y);
   }
 
   /**
@@ -213,8 +236,7 @@ function draw() {
         invaders[i].removeIt();
         invaders[i].explode();
         if(invaders[i].dropRate > 50.00) {
-          bonusStars.push( new BonusStar(invaders[i].x, invaders[i].y) );
-          console.log("new BonusStar created");
+          bonusItems.push( new Bonus(invaders[i].x, invaders[i].y, "star", starPNG) );
         }
         score++;
         bulletHits++;
@@ -233,6 +255,9 @@ function draw() {
         if(meteorites[i].shield <= 0) {
           meteorites[i].removeIt();
           meteorites[i].explode();
+          if(parseInt(meteorites[i].dropRate) % 3 == 0) {
+            bonusItems.push( new Bonus(meteorites[i].x, meteorites[i].y, "shield", shieldPNG) );
+          }
           score += 100;
           bulletHits++;
         }
@@ -257,7 +282,11 @@ function draw() {
   for(let b = invaderBullets.length - 1; b >= 0; b-- ) {
     if(invaderBullets[b].toRemove) {
       invaderBullets.splice(b, 1);
-      damage += 150;
+      if(ship.shieldActive == true && ship.shield > 0) {
+        ship.shield--;
+      } else {
+        damage += 150;
+      }
     }
   }
 
@@ -271,9 +300,9 @@ function draw() {
    * Remove the Bonus Stars if the status is set to remove
    * This should happen when the stars are collected by ship
    */
-  for(let s = bonusStars.length - 1; s >= 0; s--) {
-    if(bonusStars[s].toRemove) {
-      bonusStars.splice(s, 1);
+  for(let s = bonusItems.length - 1; s >= 0; s--) {
+    if(bonusItems[s].toRemove) {
+      bonusItems.splice(s, 1);
     }
   }
 
@@ -299,7 +328,7 @@ function draw() {
 
   if(invaders.length < 1) {
 
-    if(bonusStars.length < 1) {
+    if(bonusItems.length < 1) {
       //Player wins!
 
       var endTime = getTime();
