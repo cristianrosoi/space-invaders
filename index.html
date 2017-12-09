@@ -27,12 +27,22 @@
     </div>
     <br><br>
     <div>
-      <button id="play" type="button" class="btn-play">Options</button>
+      <button id="options" type="button" class="btn-play" onclick="toggleOptions()">Options</button>
        &nbsp;&nbsp;
       <button id="play" type="button" class="btn-play" onclick="startGame()">Play</button>
     </div>
+    <br><br>
+    <div class="options">
+      <h3>Music Volume: </h3>
+      <input type="range" id="musicVolume" min="0" max="1" step="0.1" onchange="setVolume('musicVolume')">
+      <h3>SFX Sound Volume: </h3>
+      <input type="range" id="soundVolume" min="0" max="1" step="0.1" onchange="setVolume('soundVolume')">
+      <br><br>
+      <button type="button" id="defaultOptions" class="btn-play" onclick="defaultOptions()">Defaults</button>
+      &nbsp;&nbsp;
+      <button type="button" id="saveOptions" class="btn-play" onclick="saveOptions()">Save</button>
+    </div>
   </header>
-
 
 <script src="./app.js"></script>
 </body>

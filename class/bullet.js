@@ -2,15 +2,18 @@ class Bullet {
   constructor(x, y) {
     this.x = x;
     this.y = y;
+
     //circle radius
     this.r = 2;
     this.toRemove = false;
   }
 
   show() {
-    noStroke();
-    fill(231, 76, 60);
-    ellipse(this.x, this.y, this.r * 2, this.r * 20);
+    // noStroke();
+    // fill(231, 76, 60);
+    // ellipse(this.x, this.y, this.r * 2, this.r * 20);
+    imageMode(CENTER);
+    image(laserPNG, this.x, this.y);
   }
 
   move() {

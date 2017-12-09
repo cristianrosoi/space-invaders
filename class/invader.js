@@ -21,7 +21,6 @@ class Invader {
 
   explode() {
     image(explosionGIF, this.x, this.y);
-    explosionSound.setVolume(0.3);
     explosionSound.play();
   }
 

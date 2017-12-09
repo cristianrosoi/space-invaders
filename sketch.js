@@ -1,6 +1,16 @@
-/**
- * Youtube Tutorial
- */
+var musicVolume = 0.5;
+var soundVolume = 0.5;
+
+(function(){
+  try {
+    if(localStorage.getItem("musicVolume") != null) {
+      musicVolume = parseFloat(localStorage.getItem("musicVolume"));
+      soundVolume = parseFloat(localStorage.getItem("soundVolume"));
+    }
+  } catch (error) {
+    console.error("Can't find savedSound", error);
+  }
+})();
 
 var keyCodes = {
   "w": 87,
@@ -21,16 +31,16 @@ var keyCodes = {
 var ship = null;
 var shipPNG = null;
 
-var meteorites = new Array();
+var meteorites = [];
 
-var bullets = new Array();
+var bullets = [];
 var bulletsShot = 0;
 var bulletHits = 0;
 
-var invaders = new Array();
+var invaders = [];
 
 var invaderPNG = null;
-var invaderBullets = new Array();
+var invaderBullets = [];
 
 var backgroundImage = null;
 
@@ -51,7 +61,7 @@ function getTime() {
 }
 
 var shipColor = sessionStorage.getItem("shipColor");
-var shipModel = sessionStorage.getItem("shipModel");
+var shipModel = sessionStorage.getItem("shipModel") || "./assets/art/PNG/playerShip1_blue.png";
 var name = sessionStorage.getItem("name");
 
 function preload() {
@@ -59,7 +69,9 @@ function preload() {
    * Load Assets: images, sounds, gifs
    */
   shipPNG = loadImage(shipModel);
-  shipDistroyedPNG = loadImage("./assets/art/PNG/Damage/playerShip1_damage3.png")
+  shipDistroyedPNG = loadImage("./assets/art/PNG/Damage/playerShip1_damage3.png");
+  laserPNG = loadImage("./assets/art/PNG/Lasers/laser_" + shipColor + "02.png");
+
   invaderPNG = loadImage("./assets/art/PNG/Enemies/enemyBlue2.png");
   starsPNG = loadImage("./assets/stars.jpg");
   stars2PNG = loadImage("./assets/stars2.jpg");
@@ -73,9 +85,13 @@ function preload() {
 
   soundFormats('mp3', 'ogg');
   explosionSound = loadSound('./assets/sounds/explosion.mp3');
-  laserSound = loadSound('./assets/sounds/laser.mp3');
+  explosionSound.setVolume(soundVolume - 0.2);
+
   laserSound2 = loadSound('./assets/art/Bonus/sfx_laser1.ogg');
+  laserSound2.setVolume(soundVolume);
+
   music = loadSound('./assets/sounds/music.mp3');
+  music.setVolume(musicVolume);
 
   imageY = displayHeight / 2;
 }
@@ -97,8 +113,6 @@ function setup() {
 
   }
 
-
-
   //EVENTS
   var playerWinEvent = new Event("playerWin");
 
@@ -119,9 +133,6 @@ function draw() {
     imageY = displayHeight / 2;
   }
 
-
-
-
   /**
    * Show the score info
    * on top left of the screen
@@ -130,8 +141,6 @@ function draw() {
   textSize(16);
   fill(255);
   text(name + "'s Score: " + score, 10, 30);
-  // text("BonusFromTime: " + bonusFromTime, 10, 50);
-  // text("BonusFromAccuaracy: " + bonusFromAccuaracy, 10, 70);
   text("damage: " + damage, 10, height - 30);
 
   /**
@@ -326,8 +335,7 @@ function keyPressed() {
   }
 
   if(keyCode == keyCodes.space) {
-    bullets.push( new Bullet(ship.x, height - 60) );
-    //laserSound.play();
+    bullets.push( new Bullet(ship.x, height - ship.shipHeight * 2) );
     laserSound2.play();
     bulletsShot++;
   }

@@ -1,3 +1,52 @@
+var optionStatus = false;
+
+function toggleOptions() {
+  if(optionStatus == false) {
+    document.querySelector(".options").style.display = "block";
+    optionStatus = true;
+  } else if (optionStatus) {
+    document.querySelector(".options").style.display = "none";
+    optionStatus = false;
+  }
+}
+
+var musicVolume = "0.5";
+var soundVolume = "0.5";
+
+(function(){
+  try {
+    if(localStorage.getItem("musicVolume") != null) {
+      musicVolume = localStorage.getItem("musicVolume");
+      soundVolume = localStorage.getItem("soundVolume");
+
+      document.querySelector("#musicVolume").value = musicVolume;
+      document.querySelector("#soundVolume").value = soundVolume;
+    }
+  } catch (error) {
+    console.error("Can't find savedSound", error);
+  }
+})();
+
+function setVolume(id) {
+  if(id == "musicVolume") {
+    musicVolume = document.querySelector("#musicVolume").value;
+  }
+  else if (id == "soundVolume") {
+    soundVolume = document.querySelector("#soundVolume").value;
+  }
+}
+
+function defaultOptions() {
+  document.querySelector("#musicVolume").value = "0.5";
+  document.querySelector("#soundVolume").value = "0.5";
+}
+
+function saveOptions() {
+  localStorage.setItem("musicVolume", musicVolume);
+  localStorage.setItem("soundVolume", soundVolume);
+  console.log("Options Saved!");
+}
+
 function startGame() {
   window.location.href = window.origin + "/space-invaders/play";
 }
