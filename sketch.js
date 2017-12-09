@@ -42,6 +42,9 @@ var invaders = [];
 var invaderPNG = null;
 var invaderBullets = [];
 
+var bonusStars = [];
+var collectedBonusStars = 0;
+
 var backgroundImage = null;
 
 var score = 0;
@@ -70,12 +73,14 @@ function preload() {
    */
   shipPNG = loadImage(shipModel);
   shipDistroyedPNG = loadImage("./assets/art/PNG/Damage/playerShip1_damage3.png");
+
   laserPNG = loadImage("./assets/art/PNG/Lasers/laser_" + shipColor + "02.png");
 
   invaderPNG = loadImage("./assets/art/PNG/Enemies/enemyBlue2.png");
-  starsPNG = loadImage("./assets/stars.jpg");
+
   stars2PNG = loadImage("./assets/stars2.jpg");
-  starsPNG_1080p = loadImage("./assets/stars_1080p.jpg");
+  star = loadImage("./assets/art/PNG/Power-ups/star_gold.png");
+
   meteorPNG = loadImage("./assets/art/PNG/Meteors/meteorBrown_big2.png");
 
   spaceFont = loadFont('./assets/art/Bonus/kenvector_future.ttf');
@@ -89,6 +94,9 @@ function preload() {
 
   laserSound2 = loadSound('./assets/art/Bonus/sfx_laser1.ogg');
   laserSound2.setVolume(soundVolume);
+
+  collectedSound = loadSound('./assets/art/Bonus/sfx_twoTone.ogg');
+  collectedSound.setVolume(soundVolume);
 
   music = loadSound('./assets/sounds/music.mp3');
   music.setVolume(musicVolume);
@@ -104,8 +112,8 @@ function setup() {
   ship = new Ship();
 
   for(let i = 0; i < Math.round((displayWidth / ship.shipWidth) / 2); i++) {
-    invaders.push(new Invader(i * 175 + 80, 63));
-    invaders.push(new Invader(i * 175 + 80, 60 * 3));
+    invaders.push(new Invader(i * 175 + 80, 63, random(0, 100)));
+    invaders.push(new Invader(i * 175 + 80, 60 * 3, random(0, 100)));
 
     if(i % 5 == 0) {
       meteorites.push(new Meteor(random(0, width), 100) );
@@ -133,6 +141,8 @@ function draw() {
     imageY = displayHeight / 2;
   }
 
+  image(star, 30, 30);
+
   /**
    * Show the score info
    * on top left of the screen
@@ -140,7 +150,8 @@ function draw() {
   textFont(spaceFontThin);
   textSize(16);
   fill(255);
-  text(name + "'s Score: " + score, 10, 30);
+  text(name + "'s Score: " + score, 100, 40);
+  text(collectedBonusStars, 50, 50);
   text("damage: " + damage, 10, height - 30);
 
   /**
@@ -170,7 +181,20 @@ function draw() {
     }
   }
 
+  for(let star of bonusStars) {
+    star.show();
+    star.move();
 
+    if(star.collected(ship)) {
+      collectedBonusStars++;
+      star.removeIt();
+    }
+
+    //star missed or not collected
+    if(star.y > height) {
+      star.removeIt();
+    }
+  }
 
   /**
    * Shooting bullets whenever the user is
@@ -188,6 +212,10 @@ function draw() {
         bullets[b].removeIt();
         invaders[i].removeIt();
         invaders[i].explode();
+        if(invaders[i].dropRate > 50.00) {
+          bonusStars.push( new BonusStar(invaders[i].x, invaders[i].y) );
+          console.log("new BonusStar created");
+        }
         score++;
         bulletHits++;
       }
@@ -239,9 +267,18 @@ function draw() {
     }
   }
 
+  /**
+   * Remove the Bonus Stars if the status is set to remove
+   * This should happen when the stars are collected by ship
+   */
+  for(let s = bonusStars.length - 1; s >= 0; s--) {
+    if(bonusStars[s].toRemove) {
+      bonusStars.splice(s, 1);
+    }
+  }
+
   for(let i = 0; i < invaders.length; i++) {
     if(ship.hits(invaders[i])) {
-      console.log("Ship HIT!!!");
       damage++;
     }
   }
@@ -262,30 +299,32 @@ function draw() {
 
   if(invaders.length < 1) {
 
-    //Player wins!
+    if(bonusStars.length < 1) {
+      //Player wins!
 
-    var endTime = getTime();
+      var endTime = getTime();
 
-    /**
-     * bonusFromTime in Minutes * 10
-     * 1 millisecond = 0.0000166667;
-     *
-     * bonusFromTime adds to score
-     * should be less if the
-     * time to clear the level is bigger
-     *
-     * bonusFromAccuaracy adds to score
-     * should be bigger if the accuaracy
-     * is closer to 0
-     */
+      /**
+       * bonusFromTime in Minutes * 10
+       * 1 millisecond = 0.0000166667;
+       *
+       * bonusFromTime adds to score
+       * should be less if the
+       * time to clear the level is bigger
+       *
+       * bonusFromAccuaracy adds to score
+       * should be bigger if the accuaracy
+       * is closer to 0
+       */
 
-    var timeDiff = ((endTime - startTime) * 0.0000166667).toFixed(2);
-    bonusFromTime = Math.round((1 / timeDiff) * 100);
+      var timeDiff = ((endTime - startTime) * 0.0000166667).toFixed(2);
+      bonusFromTime = Math.round((1 / timeDiff) * 100);
 
-    var accuaracy = bulletsShot / bulletHits;
-    bonusFromAccuaracy = Math.round((1 / accuaracy) * 1000);
+      var accuaracy = bulletsShot / bulletHits;
+      bonusFromAccuaracy = Math.round((1 / accuaracy) * 1000);
 
-    window.dispatchEvent(new CustomEvent("playerWin"));
+      window.dispatchEvent(new CustomEvent("playerWin"));
+    }
 
   }
 

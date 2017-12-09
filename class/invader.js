@@ -1,10 +1,9 @@
 class Invader {
-  constructor(x, y) {
+  constructor(x, y, dropRate) {
     this.x = x;
     this.y = y;
-
-    //this.width = 104;
-    //this.height = 84;
+    this.dropRate = dropRate.toFixed(2);
+    console.log("invader's drop rate:", dropRate);
 
     //circle radius
     this.r = 104 / 2;
