@@ -1,0 +1,101 @@
+@font-face {
+  font-family: spaceFont;
+  src: url(../assets/art/Bonus/kenvector_future.ttf);
+}
+
+@font-face {
+  font-family: spaceFontThin;
+  src: url(../assets/art/Bonus/kenvector_future_thin.ttf);
+}
+
+body {
+  margin: 0;
+  background: black;
+  font-family: spaceFontThin;
+  cursor: url(../assets/art/PNG/UI/cursor.cur), url(../assets/art/PNG/UI/cursor.png), auto;
+}
+
+input[type="text"] {
+  background: transparent;
+  border: none;
+  border-radius: none;
+  border-bottom: 2px solid white;
+  color: white;
+  text-indent: 10px;
+  font-size: 16px;
+  font-family: spaceFontThin;
+}
+
+input[type="text"]:focus {
+  outline: none;
+}
+
+label {
+  color: white;
+}
+
+header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 90vh;
+}
+
+.game-title {
+  text-align: center;
+  font-family: spaceFont;
+  color: white;
+}
+
+.choose-ship-container {
+  position: relative;
+}
+
+.box {
+  width: 100px;
+  height: 20px;
+  margin: 10px;
+  border: 1px solid white;
+}
+
+.box-blue {
+  color: white;
+  background: #36bbf5;
+}
+
+.box-green {
+  color: white;
+  background: #71c937;
+}
+
+.box-orange {
+  color: white;
+  background: #de532c;
+}
+
+.box-red {
+  color: white;
+  background: #ac3939;
+}
+
+.btn-play {
+  background: transparent;
+  width: 100px;
+  height: 30px;
+  color: white;
+  font-family: spaceFontThin;
+  font-size: 16px;
+  border: 1px solid white;
+}
+
+.btn-play:hover {
+  background: white;
+  cursor: pointer;
+  color: black;
+}
+
+.btn-play:focus {
+  outline: none;
+}
+

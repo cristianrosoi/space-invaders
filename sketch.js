@@ -50,12 +50,15 @@ function getTime() {
   return currentDate.getTime();
 }
 
+var shipColor = sessionStorage.getItem("shipColor");
+var shipModel = sessionStorage.getItem("shipModel");
+var name = sessionStorage.getItem("name");
 
 function preload() {
   /**
    * Load Assets: images, sounds, gifs
    */
-  shipPNG = loadImage("./assets/art/PNG/playerShip1_red.png");
+  shipPNG = loadImage(shipModel);
   shipDistroyedPNG = loadImage("./assets/art/PNG/Damage/playerShip1_damage3.png")
   invaderPNG = loadImage("./assets/art/PNG/Enemies/enemyBlue2.png");
   starsPNG = loadImage("./assets/stars.jpg");
@@ -126,9 +129,9 @@ function draw() {
   textFont(spaceFontThin);
   textSize(16);
   fill(255);
-  text("Score: " + score, 10, 30);
-  text("BonusFromTime: " + bonusFromTime, 10, 50);
-  text("BonusFromAccuaracy: " + bonusFromAccuaracy, 10, 70);
+  text(name + "'s Score: " + score, 10, 30);
+  // text("BonusFromTime: " + bonusFromTime, 10, 50);
+  // text("BonusFromAccuaracy: " + bonusFromAccuaracy, 10, 70);
   text("damage: " + damage, 10, height - 30);
 
   /**
