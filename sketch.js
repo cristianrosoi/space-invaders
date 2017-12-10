@@ -64,15 +64,15 @@ function getTime() {
   return currentDate.getTime();
 }
 
-var shipColor = sessionStorage.getItem("shipColor");
-var shipModel = sessionStorage.getItem("shipModel") || "./assets/art/PNG/playerShip1_blue.png";
+var shipColor = sessionStorage.getItem("shipColor") || "blue";
+var shipModel = sessionStorage.getItem("shipModel") || "./assets/art/PNG/playerShip1_";
 var name = sessionStorage.getItem("name");
-
+var shipImage = shipModel + shipColor + ".png";
 function preload() {
   /**
    * Load Assets: images, sounds, gifs
    */
-  shipPNG = loadImage(shipModel);
+  shipPNG = loadImage(shipImage);
   shipShieldActivePNG = loadImage("./assets/art/PNG/Effects/shield1.png");
   shipDistroyedPNG = loadImage("./assets/art/PNG/Damage/playerShip1_damage3.png");
 

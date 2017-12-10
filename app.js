@@ -1,4 +1,17 @@
 var optionStatus = false;
+var defaultShipColor = sessionStorage.getItem("shipColor");
+var defaultShipModel = sessionStorage.getItem("shipModel");
+var defaultShip;
+
+if (defaultShipModel && defaultShipColor) {
+  defaultShip = document.querySelector("#ship").setAttribute("src", defaultShipModel + defaultShipColor + ".png");
+} else if (defaultShipColor) {
+  defaultShip = document.querySelector("#ship").setAttribute("src", "./assets/art/PNG/playerShip1_" + defaultShipColor + ".png");
+} else if (defaultShipModel) {
+  defaultShip = document.querySelector("#ship").setAttribute("src", defaultShipModel + "blue" + ".png");
+} else {
+    defaultShip = document.querySelector("#ship").setAttribute("src", "./assets/art/PNG/playerShip1_" + "blue" + ".png");
+}
 
 function toggleOptions() {
   if(optionStatus == false) {
@@ -48,7 +61,7 @@ function saveOptions() {
 }
 
 function startGame() {
-  window.location.href = window.origin + "/space-invaders/play";
+  window.location.href = window.origin + "/space-invaders/play.html";
 }
 
 document.querySelector("#name").addEventListener("input", function() {
@@ -65,28 +78,34 @@ var keyCodes = {
 
 var ship_iterator = 1;
 var shipColor = "blue";
-var shipModel = "./assets/art/PNG/playerShip1_" + shipColor + ".png";
+var shipModel = "./assets/art/PNG/playerShip1_";
 
 function setShipColor(col) {
   console.log(col);
   shipColor = col;
   sessionStorage.setItem("shipColor", shipColor);
 
-  document.querySelector("#ship").setAttribute("src", "./assets/art/PNG/playerShip1_" + shipColor + ".png");
+  if (sessionStorage.getItem("shipModel")) {
+      shipModel = sessionStorage.getItem("shipModel");
+      document.querySelector("#ship").setAttribute("src", shipModel + shipColor + ".png");
+  } else {
+      document.querySelector("#ship").setAttribute("src", shipModel + shipColor+ ".png");
+      sessionStorage.setItem("shipModel", "./assets/art/PNG/playerShip1_");
+  }
 }
 
 document.body.addEventListener("keypress", function (event) {
   console.log(event.keyCode);
   if(document.querySelector("#name") !== document.activeElement) {
-    shipColorList = ["blue", "green", "orange", "red"];
-
+    sessionStorage.getItem("shipColor") ? shipColor = sessionStorage.getItem("shipColor") : shipColor = "blue";
+    shipColorList = ["blue", "green", "orange", "red"]; // not needed
     shipList = [
-      "./assets/art/PNG/playerShip1_" + shipColor + ".png",
-      "./assets/art/PNG/playerShip2_" + shipColor + ".png",
-      "./assets/art/PNG/playerShip3_" + shipColor + ".png"
+      "./assets/art/PNG/playerShip1_",
+      "./assets/art/PNG/playerShip2_",
+      "./assets/art/PNG/playerShip3_"
     ];
 
-    document.querySelector("#ship").setAttribute("src", shipList[ship_iterator]);
+    document.querySelector("#ship").setAttribute("src", shipList[ship_iterator] + shipColor + ".png");
 
     if(event.keyCode == keyCodes.d) {
       shipModel = shipList[ship_iterator];
