@@ -1,4 +1,17 @@
 var optionStatus = false;
+var defaultShipColor = sessionStorage.getItem("shipColor");
+var defaultShipModel = sessionStorage.getItem("shipModel");
+var defaultShip;
+
+if (defaultShipModel && defaultShipColor) {
+  defaultShip = document.querySelector("#ship").setAttribute("src", defaultShipModel + defaultShipColor + ".png");
+} else if (defaultShipColor) {
+  defaultShip = document.querySelector("#ship").setAttribute("src", "./assets/art/PNG/playerShip1_" + defaultShipColor + ".png");
+} else if (defaultShipModel) {
+  defaultShip = document.querySelector("#ship").setAttribute("src", defaultShipModel + "blue" + ".png");
+} else {
+    defaultShip = document.querySelector("#ship").setAttribute("src", "./assets/art/PNG/playerShip1_" + "blue" + ".png");
+}
 
 function toggleOptions() {
   if(optionStatus == false) {
