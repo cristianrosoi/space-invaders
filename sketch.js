@@ -69,6 +69,8 @@ var shipModel = sessionStorage.getItem("shipModel") || "./assets/art/PNG/playerS
 var name = sessionStorage.getItem("name");
 var shipImage = shipModel + shipColor + ".png";
 
+var isBonus = 0;
+
 function preload() {
     /**
      * Load Assets: images, sounds, gifs
@@ -397,11 +399,7 @@ function draw() {
  */
 
 function keyPressed() {
-    if (keyCode == keyCodes.d) {
-        ship.setDirection(1);
-    } else if (keyCode == keyCodes.a) {
-        ship.setDirection(-1);
-    }
+
     if (keyCode == keyCodes.space) {
         bullets.push(new Bullet(ship.x, height - 60));
         //laserSound.play();
