@@ -1,19 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" href="./css/gui-styles.css">
-  <title>Space Invaders</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./css/gui-styles.css">
+    <title>Space Invaders</title>
 </head>
+
 <body>
 
-  <header>
-    <h1 class="game-title">Space Invaders</h1>
-    <label for="name">Enter your name: <input type="text" id="name"></label>
-    <br><br>
-    <label for="ship-container">Press &nbsp; A &nbsp; or &nbsp; D &nbsp; to choose your space ship:
+    <header>
+        <h1 class="game-title">Space Invaders</h1>
+        <label for="name">Enter your name: <input type="text" id="name"></label>
+        <br><br>
+        <label for="ship-container">Press &nbsp; A &nbsp; or &nbsp; D &nbsp; to choose your space ship:
       <select class="color-container" onchange="setShipColor(value)">
         <option class="box box-blue" value="blue">Blue</option>
         <option class="box box-green" value="green">Green</option>
@@ -21,29 +23,28 @@
         <option class="box box-red" value="red">Red</option>
       </select>
     </label>
-    <br>
-    <div id="ship-container" class="choose-ship-container">
-      <img id="ship">
-    </div>
-    <br><br>
-    <div>
-      <button id="options" type="button" class="btn-play" onclick="toggleOptions()">Options</button>
-       &nbsp;&nbsp;
-      <button id="play" type="button" class="btn-play" onclick="startGame()">Play</button>
-    </div>
-    <br><br>
-    <div class="options">
-      <h3>Music Volume: </h3>
-      <input type="range" id="musicVolume" min="0" max="1" step="0.1" onchange="setVolume('musicVolume')">
-      <h3>SFX Sound Volume: </h3>
-      <input type="range" id="soundVolume" min="0" max="1" step="0.1" onchange="setVolume('soundVolume')">
-      <br><br>
-      <button type="button" id="defaultOptions" class="btn-play" onclick="defaultOptions()">Defaults</button>
-      &nbsp;&nbsp;
-      <button type="button" id="saveOptions" class="btn-play" onclick="saveOptions()">Save</button>
-    </div>
-  </header>
+        <br>
+        <div id="ship-container" class="choose-ship-container">
+            <img id="ship">
+        </div>
+        <br><br>
+        <div>
+            <button id="options" type="button" class="btn-play" onclick="toggleOptions()">Options</button> &nbsp;&nbsp;
+            <button id="play" type="button" class="btn-play" onclick="startGame()">Play</button>
+        </div>
+        <br><br>
+        <div class="options">
+            <h3>Music Volume: </h3>
+            <input type="range" id="musicVolume" min="0" max="1" step="0.1" onchange="setVolume('musicVolume')">
+            <h3>SFX Sound Volume: </h3>
+            <input type="range" id="soundVolume" min="0" max="1" step="0.1" onchange="setVolume('soundVolume')">
+            <br><br>
+            <button type="button" id="defaultOptions" class="btn-play" onclick="defaultOptions()">Defaults</button> &nbsp;&nbsp;
+            <button type="button" id="saveOptions" class="btn-play" onclick="saveOptions()">Save</button>
+        </div>
+    </header>
 
-<script src="./app.js"></script>
+    <script src="./app.js"></script>
 </body>
+
 </html>
