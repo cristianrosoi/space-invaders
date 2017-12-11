@@ -71,6 +71,8 @@ var shipImage = shipModel + shipColor + ".png";
 
 var isBonus = 0;
 
+var isBonus = 0;
+
 function preload() {
     /**
      * Load Assets: images, sounds, gifs
